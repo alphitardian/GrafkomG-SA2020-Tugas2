@@ -1,53 +1,139 @@
 #include <iostream>
 #include <math.h>
 #include <GL/freeglut.h>
+#define phi 3.14
 using namespace std;
 
 float length = 0.0;
+float deltaMovement = 0.0;
+bool isMove = false;
 
-void drawCircle(int radius) {
-	glBegin(GL_LINE_STRIP);
-	for (int i = 0; i < 720; i++) {
-		glVertex2f(sin(i) * radius + 50, cos(i) * radius + 50);
-		glRotatef(45.0 + i, 0.0, 0.0, 0.0);
+void drawPlanetObject(float radius, float distance, float delta) {
+	glBegin(GL_POLYGON);
+	for (int i = 0; i < 360; i++) {
+		float rad = i * phi / 180;
+		glVertex2f(sin(rad) * radius + (sin(delta) * distance + 50), cos(rad) * radius + (cos(delta) * distance + 50));
 	}
 	glEnd();
+}
+
+void drawSatelliteObject(float radius, float distanceSatellite, float distancePlanet, float deltaPlanet, float deltaSatellite) {
+	glBegin(GL_POLYGON);
+	for (int i = 0; i < 360; i++) {
+		float rad = i * phi / 180;
+		glVertex2f(sin(rad) * radius + (sin(deltaSatellite) * distanceSatellite + (sin(deltaPlanet) * distancePlanet + 50)),
+			cos(rad) * radius + (cos(deltaSatellite) * distanceSatellite + (cos(deltaPlanet) * distancePlanet + 50)));
+	}
+	glEnd();
+}
+
+void drawPlanetTrack(float radius) {
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < 360; i++) {
+		float rad = i * phi / 180;
+		glVertex2f(sin(rad) * radius + 50, cos(rad) * radius + 50);
+	}
+	glEnd();
+}
+
+void drawSatelliteTrack(float radius, float deltaPlanet, float distancePlanet) {
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < 360; i++) {
+		float rad = i * phi / 180;
+		glVertex2f(sin(rad) * radius + (sin(deltaPlanet) * distancePlanet + 50), cos(rad) * radius + (cos(deltaPlanet) * distancePlanet + 50));
+	}
+	glEnd();
+}
+
+void connectingLinePlanet(float distance, float delta) {
+	glVertex2f((sin(delta) * distance + 50), (cos(delta) * distance + 50));
+}
+
+void connectingLineSatelliteCenter(float distancePlanet, float deltaPlanet) {
+	glVertex2f(sin(deltaPlanet) * distancePlanet + 50, cos(deltaPlanet) * distancePlanet + 50); 
+}
+
+void connectingLineSatellite(float distancePlanet, float distanceSatellite, float deltaPlanet, float deltaSatellite) {
+	glVertex2f(sin(deltaSatellite) * distanceSatellite + (sin(deltaPlanet) * distancePlanet + 50), cos(deltaSatellite) * distanceSatellite + (cos(deltaPlanet) * distancePlanet + 50));
 }
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glBegin(GL_POINTS);
-	glColor3f(1.0, 1.0, 0.0);
-	glVertex2f(50.0, 50.0);
+	/* Stars & Planet Object - Start*/
+		// Sun
+		glColor3f(1.0, 1.0, 0.0); drawPlanetObject(7, 0, 0);
 
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex2f(sin(length * 2) * 10 + 50, cos(length * 2) * 10 + 50);
+		// Mercury
+		glColor3f(1.0, 0.0, 0.0); drawPlanetObject(1, 15, length * 2.5);
 
-	glVertex2f(sin(length) * 30 + 50, cos(length) * 30 + 50);
-	glEnd();
+		// Venus
+		glColor3f(1.0, 0.0, 1.0); drawPlanetObject(1.5, 25, length * 2);
 
-	glBegin(GL_POINTS);
-	glVertex2f(sin(length * 3) * 10 + (sin(length) * 30 + 50), cos(length * 3) * 10 + (cos(length) * 30 + 50));
-	glEnd();
+		// Earth
+		glColor3f(0.0, 0.0, 1.0); drawPlanetObject(2.5, 35, length * 1.5);
 
-	// Orbit Planet & Stars
-	glBegin(GL_LINES);
-	glColor3f(1.0, 1.0, 1.0);
-	glVertex2f(50, 50); glVertex2f(sin(length * 2) * 10 + 50, cos(length * 2) * 10 + 50);
-	glVertex2f(50, 50); glVertex2f(sin(length) * 30 + 50, cos(length) * 30 + 50);
-	glVertex2f(sin(length) * 30 + 50, cos(length) * 30 + 50); glVertex2f(sin(length * 3) * 10 + (sin(length) * 30 + 50), cos(length * 3) * 10 + (cos(length) * 30 + 50));
-	glEnd();
+		// Mars
+		glColor3f(0.8, 0.0, 0.0); drawPlanetObject(1.75, 45, length);
+	/* Stars & Planet Object - End*/
 
+	/* Satellite Object - Start */
+		// Earth Satellite
+		glColor3f(1.0, 1.0, 1.0); drawSatelliteObject(0.75, 4, 35, length * 1.5, length * 5);
+
+		glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.5, 3, 45, length, length * 4.5);
+		glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+	/* Satellite Object - Done */
+
+	glColor4f(0.5, 0.5, 0.5, 0.5);
+	/* Orbit Line Planet & Stars - Start */
+		glBegin(GL_LINES);
+		glVertex2f(50, 50); connectingLinePlanet(15, length * 2.5);
+		glVertex2f(50, 50); connectingLinePlanet(25, length * 2);
+		glVertex2f(50, 50); connectingLinePlanet(35, length * 1.5);
+		glVertex2f(50, 50); connectingLinePlanet(45, length);
+		glEnd();
+	/* Orbit Line Planet & Stars - End */
+
+	/* Orbit Moon & Planet - Start */
+		glBegin(GL_LINES);
+		connectingLineSatelliteCenter(35, length * 1.5); connectingLineSatellite(35, 4, length * 1.5, length * 5);
+		connectingLineSatelliteCenter(45, length); connectingLineSatellite(45, 3, length, length * 4.5);
+		connectingLineSatelliteCenter(45, length); connectingLineSatellite(45, 5, length, length * 4);
+		glEnd();
+	/* Orbit Moon & Planet - End */
+
+	/* Planet & Satellite Track Orbit - Start */
+		drawPlanetTrack(15);
+		drawPlanetTrack(25);
+		drawPlanetTrack(35);
+		drawPlanetTrack(45);
+		drawSatelliteTrack(4, length * 1.5, 35);
+		drawSatelliteTrack(3, length, 45);
+		drawSatelliteTrack(5, length, 45);
+	/* Planet & Satellite Track Orbit - End */
 
 	glFlush();
+}
+
+void keyFun(unsigned char key, int x, int y) {
+	cout << key << " key pressed" << endl;
+
+	if (key == 'P' && isMove == false) {
+		deltaMovement = 0.025;
+		isMove = true;
+	}
+	else if (isMove == true) {
+		deltaMovement = 0;
+		isMove = false;
+	}
 }
 
 void timer(int) {
 	glutPostRedisplay();
 	glutTimerFunc(1000 / 30, timer, 0);
 
-	length += 0.05;
+	length += deltaMovement;
 }
 
 void myInit() {
@@ -57,6 +143,7 @@ void myInit() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(0.0, 100.0, 0.0, 100.0);
+	glEnable(GL_BLEND);
 }
 
 int main(int argc, char** argv) {
@@ -68,6 +155,8 @@ int main(int argc, char** argv) {
 
 	glutTimerFunc(0, timer, 0);
 	glutDisplayFunc(display);
+	glutKeyboardFunc(keyFun);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
 
 	myInit();
 	glutMainLoop();
