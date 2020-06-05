@@ -7,7 +7,6 @@ using namespace std;
 float length = 0.0;
 float deltaMovement = 0.0;
 bool isMove = false;
-bool orbitLine = false;
 
 void drawPlanetObject(float radius, float distance, float delta) {
 	glBegin(GL_POLYGON);
@@ -94,7 +93,7 @@ void drawOrbitLine() {
 void keyFun(unsigned char key, int x, int y) {
 	cout << key << " key pressed" << endl;
 
-	if (isMove == false) { 
+	if (key == 'P' && isMove == false) { 
 		deltaMovement = 0.025; 
 		isMove = true; 
 	}
@@ -102,7 +101,6 @@ void keyFun(unsigned char key, int x, int y) {
 		deltaMovement = 0; 
 		isMove = false; 
 	}
-
 }
 
 void display() {
@@ -133,10 +131,8 @@ void display() {
 	glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.5, 3, 45, length, length * 4.5);
 	glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
 	/* Satellite Object - Done */
-
-	drawOrbitLine();
 	
-	glFlush();
+	glutSwapBuffers();
 }
 
 void timer(int) {
@@ -157,7 +153,7 @@ void myInit() {
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Ardian Pramudya Alphita - 672018150");
