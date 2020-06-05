@@ -13,7 +13,7 @@ void drawPlanetObject(float radius, float distance, float delta) {
 	for (int i = 0; i < 360; i++) {
 		float rad = (2 * phi) * i / 360;
 		glVertex2f(cos(rad) * radius + (cos(delta) * distance + 50), sin(rad) * radius + (sin(delta) * distance + 50));
-		glColor3f(0.0, 0.0, 0.0);
+		glColor3f(0.1, 0.1, 0.1);
 	}
 	glEnd();
 }
@@ -24,7 +24,7 @@ void drawSatelliteObject(float radius, float distanceSatellite, float distancePl
 		float rad = (2 * phi) * i / 360;
 		glVertex2f(cos(rad) * radius + (cos(deltaSatellite) * distanceSatellite + (cos(deltaPlanet) * distancePlanet + 50)), 
 			sin(rad) * radius + (sin(deltaSatellite) * distanceSatellite + (sin(deltaPlanet) * distancePlanet + 50)));
-		glColor3f(0.0, 0.0, 0.0);
+		glColor3f(0.1, 0.1, 0.1);
 	}
 	glEnd();
 }
@@ -114,10 +114,10 @@ void display() {
 	glColor3f(1.0, 0.0, 0.0); drawPlanetObject(1, 15, length * 2.5);
 
 	// Venus
-	glColor3f(1.0, 0.0, 1.0); drawPlanetObject(1.5, 25, length * 2);
+	glColor3f(1.0, 0.3, 0.3); drawPlanetObject(1.5, 25, length * 2);
 
 	// Earth
-	glColor3f(0.0, 0.0, 1.0); drawPlanetObject(2.5, 35, length * 1.5);
+	glColor3f(0.3, 0.3, 1.0); drawPlanetObject(2.5, 35, length * 1.5);
 
 	// Mars
 	glColor3f(0.8, 0.0, 0.0); drawPlanetObject(1.75, 45, length);
@@ -128,8 +128,11 @@ void display() {
 	glColor3f(1.0, 1.0, 1.0); drawSatelliteObject(0.75, 4, 35, length * 1.5, length * 5);
 
 	// Mars Satellite
-	glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.5, 3, 45, length, length * 4.5);
-	glColor3f(0.8, 0.0, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 3, 45, length, length * 4.5);
+	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+
+	drawOrbitLine();
+
 	/* Satellite Object - Done */
 	
 	glutSwapBuffers();
@@ -143,7 +146,7 @@ void timer(int) {
 }
 
 void myInit() {
-	glClearColor(0.1, 0.1, 0.1, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glPointSize(10);
 	glLineWidth(1);
 	glMatrixMode(GL_PROJECTION);
