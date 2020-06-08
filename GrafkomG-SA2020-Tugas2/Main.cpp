@@ -7,6 +7,7 @@ using namespace std;
 float length = 0.0;
 float deltaMovement = 0.0;
 bool isMove = false;
+bool lineOrbit = false;
 
 void drawPlanetObject(float radius, float distance, float delta) {
 	glBegin(GL_POLYGON);
@@ -90,19 +91,6 @@ void drawOrbitLine() {
 	/* Planet & Satellite Track Orbit - End */
 }
 
-void keyFun(unsigned char key, int x, int y) {
-	cout << key << " key pressed" << endl;
-
-	if (key == 'P' && isMove == false) { 
-		deltaMovement = 0.025; 
-		isMove = true; 
-	}
-	else if (isMove == true) { 
-		deltaMovement = 0; 
-		isMove = false; 
-	}
-}
-
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -130,12 +118,25 @@ void display() {
 	// Mars Satellite
 	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 3, 45, length, length * 4.5);
 	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+	/* Satellite Object - Done */
 
 	drawOrbitLine();
-
-	/* Satellite Object - Done */
 	
 	glutSwapBuffers();
+}
+
+void keyFun(unsigned char key, int x, int y) {
+	cout << key << " key pressed" << endl;
+
+	if (key == 'P' && isMove == false) {
+		deltaMovement = 0.025;
+		isMove = true;
+	}
+	else if (isMove == true) {
+		deltaMovement = 0.0;
+		isMove = false;
+	}
+	glutPostRedisplay();
 }
 
 void timer(int) {
