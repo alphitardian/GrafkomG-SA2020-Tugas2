@@ -8,6 +8,7 @@ float length = 0.0;
 float deltaMovement = 0.0;
 bool isMove = false;
 bool lineOrbit = false;
+bool satellite = false;
 
 void drawPlanetObject(float radius, float distance, float delta) {
 	glBegin(GL_POLYGON);
@@ -112,15 +113,19 @@ void display() {
 	/* Stars & Planet Object - End*/
 
 	/* Satellite Object - Start */
-	// Earth Satellite
-	glColor3f(1.0, 1.0, 1.0); drawSatelliteObject(0.75, 4, 35, length * 1.5, length * 5);
+	if (satellite) {
+		// Earth Satellite
+		glColor3f(1.0, 1.0, 1.0); drawSatelliteObject(0.75, 4, 35, length * 1.5, length * 5);
 
-	// Mars Satellite
-	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 3, 45, length, length * 4.5);
-	glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+		// Mars Satellite
+		glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 3, 45, length, length * 4.5);
+		glColor3f(0.8, 0.8, 0.8); drawSatelliteObject(0.75, 5, 45, length, length * 4);
+	}
 	/* Satellite Object - Done */
 
-	drawOrbitLine();
+	if (lineOrbit) {
+		drawOrbitLine();
+	}
 	
 	glutSwapBuffers();
 }
@@ -128,14 +133,35 @@ void display() {
 void keyFun(unsigned char key, int x, int y) {
 	cout << key << " key pressed" << endl;
 
-	if (key == 'P' && isMove == false) {
-		deltaMovement = 0.025;
-		isMove = true;
+	if (key == 'P') {
+		if (isMove == false) {
+			deltaMovement = 0.025;
+			isMove = true;
+		}
+		else {
+			deltaMovement = 0.0;
+			isMove = false;
+		}
 	}
-	else if (isMove == true) {
-		deltaMovement = 0.0;
-		isMove = false;
+
+	if (key == 'L') {
+		if (lineOrbit == false) {
+			lineOrbit = true;
+		}
+		else {
+			lineOrbit = false;
+		}
 	}
+
+	if (key == 'S') {
+		if (satellite == false) {
+			satellite = true;
+		}
+		else {
+			satellite = false;
+		}
+	}
+
 	glutPostRedisplay();
 }
 
@@ -147,7 +173,7 @@ void timer(int) {
 }
 
 void myInit() {
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.1, 0.1, 0.1, 1.0);
 	glPointSize(10);
 	glLineWidth(1);
 	glMatrixMode(GL_PROJECTION);
